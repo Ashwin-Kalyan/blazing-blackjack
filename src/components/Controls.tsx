@@ -1,7 +1,6 @@
 import type { BlackjackApi } from '../hooks/useBlackjack'
 import type { Action } from '../game/strategy'
-import { INSURANCE_ADVICE } from '../game/strategy'
-import { CHIP_DENOMINATIONS } from '../game/payouts'
+import { CHIP_DENOMINATIONS, TABLE_MIN } from '../game/payouts'
 import { Chip } from './Chips'
 import './Controls.css'
 
@@ -10,14 +9,40 @@ interface ControlsProps {
   selectedChip: number
   onSelectChip: (v: number) => void
   coachOn: boolean
+  onOpenLoan: () => void
 }
 
-export function Controls({ api, selectedChip, onSelectChip, coachOn }: ControlsProps) {
+export function Controls({
+  api,
+  selectedChip,
+  onSelectChip,
+  coachOn,
+  onOpenLoan,
+}: ControlsProps) {
   const { state, rules, advice, canDouble, canSplit, doubleIsFree, splitIsFree } = api
   const phase = state.phase
   const recommended: Action | null = coachOn && advice ? advice.action : null
-
   const actionGlow = (a: Action) => (recommended === a ? 'is-recommended' : '')
+
+  const broke = state.bankroll < TABLE_MIN
+  const hasDebt = state.debt > 0
+  const repayAmount = Math.min(state.bankroll, state.debt)
+
+  // Loan / repay row, shown between rounds when relevant.
+  const moneyRow = (broke || hasDebt) && (
+    <div className="action-row secondary">
+      {broke && (
+        <button className="btn loan" onClick={onOpenLoan}>
+          Take a Loan
+        </button>
+      )}
+      {hasDebt && state.bankroll > 0 && (
+        <button className="btn ghost" onClick={api.repayLoan}>
+          Repay ${Math.round(repayAmount).toLocaleString()}
+        </button>
+      )}
+    </div>
+  )
 
   if (phase === 'betting') {
     const hasBet = state.mainBet > 0
@@ -45,23 +70,15 @@ export function Controls({ api, selectedChip, onSelectChip, coachOn }: ControlsP
             Deal
           </button>
         </div>
+        {moneyRow}
       </div>
     )
   }
 
   if (phase === 'insurance') {
-    const max = Math.min(Math.floor(state.mainBet / 2), state.bankroll)
     return (
       <div className="controls">
-        <p className="insurance-note">{INSURANCE_ADVICE}</p>
-        <div className="action-row">
-          <button className="btn" onClick={() => api.takeInsurance(max)}>
-            Insure ${max}
-          </button>
-          <button className="btn primary" onClick={api.declineInsurance}>
-            No Insurance
-          </button>
-        </div>
+        <p className="coach-line">Make your insurance decision above.</p>
       </div>
     )
   }
@@ -70,15 +87,11 @@ export function Controls({ api, selectedChip, onSelectChip, coachOn }: ControlsP
     return (
       <div className="controls">
         <div className="action-row">
-          {state.bankroll <= 0 && (
-            <button className="btn ghost" onClick={() => api.addFunds(500)}>
-              + $500 chips
-            </button>
-          )}
           <button className="btn deal" onClick={api.nextRound}>
             New Round
           </button>
         </div>
+        {moneyRow}
       </div>
     )
   }

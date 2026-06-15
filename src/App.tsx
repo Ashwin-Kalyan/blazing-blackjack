@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { useBlackjack } from './hooks/useBlackjack'
+import { useBlackjack, LOAN_APR } from './hooks/useBlackjack'
 import { DEFAULT_RULES } from './game/payouts'
 import type { Rules } from './types'
 import { Table } from './components/Table'
 import { Controls } from './components/Controls'
 import { Paytable } from './components/Paytable'
+import { CheatSheet } from './components/CheatSheet'
+import { LoanModal } from './components/LoanModal'
 import './App.css'
 
 export default function App() {
@@ -13,9 +15,21 @@ export default function App() {
   const [selectedChip, setSelectedChip] = useState(25)
   const [coachOn, setCoachOn] = useState(true)
   const [paytableOpen, setPaytableOpen] = useState(false)
+  const [cheatOpen, setCheatOpen] = useState(false)
+  const [loanOpen, setLoanOpen] = useState(false)
+
+  const openPaytable = () => {
+    setCheatOpen(false)
+    setPaytableOpen(true)
+  }
+  const openCheat = () => {
+    setPaytableOpen(false)
+    setCheatOpen(true)
+  }
 
   const { state } = api
   const penetrationPct = Math.round(state.penetration * 100)
+  const cardsLeft = Math.max(0, Math.round(rules.numDecks * 52 * (1 - state.penetration)))
 
   // Table rules can only change between rounds.
   const canEditRules = state.phase === 'betting' || state.phase === 'roundOver'
@@ -36,9 +50,16 @@ export default function App() {
   const availableChips =
     state.phase === 'betting' ? state.bankroll - committed : state.bankroll
 
-  const net = state.sessionNet
-  const netTone = net > 0 ? 'up' : net < 0 ? 'down' : 'flat'
-  const netStr = `${net > 0 ? '+' : net < 0 ? '−' : ''}$${Math.abs(net).toLocaleString()}`
+  // Net proceeds = realized gambling P&L minus interest charged on any loans.
+  const net = state.sessionNet - state.interestCost
+  const netRounded = Math.round(net)
+  const netTone = netRounded > 0 ? 'up' : netRounded < 0 ? 'down' : 'flat'
+  const netStr = `${netRounded > 0 ? '+' : netRounded < 0 ? '−' : ''}$${Math.abs(
+    netRounded,
+  ).toLocaleString()}`
+
+  const debt = state.debt
+  const aprPct = (LOAN_APR * 100).toFixed(1)
 
   return (
     <div className="app">
@@ -54,10 +75,18 @@ export default function App() {
         </div>
 
         <div className="topbar-controls">
-          <div className="shoe-meter" title={`Shoe ${penetrationPct}% dealt`}>
-            <span className="shoe-label">SHOE</span>
+          <div
+            className="shoe-meter"
+            title={`${rules.numDecks}-deck shoe — ${penetrationPct}% dealt, ${cardsLeft} cards left. Reshuffles at the cut card.`}
+            role="img"
+            aria-label={`Shoe: ${cardsLeft} cards remaining of ${rules.numDecks} decks`}
+          >
+            <span className="shoe-label">CARDS LEFT</span>
             <span className="shoe-track">
-              <span className="shoe-fill" style={{ width: `${penetrationPct}%` }} />
+              <span
+                className="shoe-fill"
+                style={{ width: `${100 - penetrationPct}%` }}
+              />
             </span>
           </div>
 
@@ -97,22 +126,45 @@ export default function App() {
             className={`pill-toggle ${coachOn ? 'on' : ''}`}
             onClick={() => setCoachOn((v) => !v)}
             title="Toggle basic-strategy coaching"
+            aria-pressed={coachOn}
           >
             Coach {coachOn ? 'On' : 'Off'}
           </button>
 
-          <button className="pill-toggle" onClick={() => setPaytableOpen(true)}>
+          <button className="pill-toggle" onClick={openCheat} aria-haspopup="dialog">
+            Cheat Sheet
+          </button>
+
+          <button className="pill-toggle" onClick={openPaytable} aria-haspopup="dialog">
             Paytables
           </button>
 
-          <div className="stat-readout">
-            <span className="stat-label">NET</span>
-            <span className={`stat-value net-${netTone}`}>{netStr}</span>
+          {debt > 0 && (
+            <div
+              className="stat-readout debt-readout"
+              title={`Loan balance at ${aprPct}% APR — accruing live`}
+              aria-label={`Loan debt $${Math.round(debt).toLocaleString()} at ${aprPct}% APR`}
+            >
+              <span className="stat-label" aria-hidden>
+                DEBT · {aprPct}%
+              </span>
+              <span className="stat-value debt-value" aria-hidden>
+                ${debt.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          <div className="stat-readout" aria-label={`Net proceeds ${netStr}`}>
+            <span className="stat-label" aria-hidden>NET</span>
+            <span className={`stat-value net-${netTone}`} aria-hidden>{netStr}</span>
           </div>
 
-          <div className="stat-readout">
-            <span className="stat-label">BANKROLL</span>
-            <span className="stat-value bankroll-value">
+          <div
+            className="stat-readout"
+            aria-label={`Bankroll $${availableChips.toLocaleString()}`}
+          >
+            <span className="stat-label" aria-hidden>BANKROLL</span>
+            <span className="stat-value bankroll-value" aria-hidden>
               ${availableChips.toLocaleString()}
             </span>
           </div>
@@ -129,10 +181,22 @@ export default function App() {
           selectedChip={selectedChip}
           onSelectChip={setSelectedChip}
           coachOn={coachOn}
+          onOpenLoan={() => setLoanOpen(true)}
         />
       </footer>
 
       <Paytable open={paytableOpen} onClose={() => setPaytableOpen(false)} rules={rules} />
+      <CheatSheet
+        open={cheatOpen}
+        onClose={() => setCheatOpen(false)}
+        api={api}
+        rules={rules}
+      />
+      <LoanModal
+        open={loanOpen}
+        onClose={() => setLoanOpen(false)}
+        onBorrow={api.takeLoan}
+      />
     </div>
   )
 }

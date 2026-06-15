@@ -1,6 +1,19 @@
 :root {
-  /* Palette — neon-noir casino */
-  --bg: #06100b;
+  /* Palette — authentic Las Vegas table */
+  --bg: #0c0a08;
+
+  /* Casino baize (billiard green) */
+  --felt-lit: #1f7a4d;
+  --felt: #136039;
+  --felt-deep: #0a4327;
+  --felt-edge: #06301c;
+  --felt-print: #f0dca0; /* screen-printed gold/cream */
+
+  /* Padded leather rail + brass trim */
+  --rail: #1a1410;
+  --rail-hi: #2b2118;
+  --brass: #c9a45a;
+
   --gold: #e8c477;
   --gold-deep: #b8902f;
   --ember: #ff5a36;
@@ -27,28 +40,53 @@ body,
 body {
   font-family: 'Outfit', system-ui, sans-serif;
   color: var(--cream);
+  /* Dim casino-floor backdrop so the green felt reads as the hero. */
   background:
-    radial-gradient(120% 90% at 50% -10%, #16271e 0%, #0a160f 45%, #050c08 100%),
+    radial-gradient(130% 90% at 50% -5%, #241a12 0%, #150f0a 45%, #0a0705 100%),
     var(--bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Ambient deco corners on the backdrop */
+/* Ambient warm pools, like distant slot-machine light on a casino floor */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(40% 30% at 0% 100%, rgba(255, 90, 54, 0.06), transparent 60%),
-    radial-gradient(40% 30% at 100% 0%, rgba(232, 196, 119, 0.05), transparent 60%);
+    radial-gradient(35% 28% at 8% 92%, rgba(255, 120, 60, 0.05), transparent 60%),
+    radial-gradient(35% 28% at 92% 8%, rgba(232, 196, 119, 0.05), transparent 60%);
   z-index: 0;
 }
 
 button {
   font-family: inherit;
+}
+
+/* Visible keyboard focus for all interactive elements (mouse clicks stay clean). */
+:where(button, a, [role='button'], input, select):focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.bet-spot:focus-visible,
+.chip:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 ::selection {

@@ -33,8 +33,10 @@ export function Chip({ value, size = 56, selected, onClick, disabled }: ChipProp
       aria-label={`$${value} chip`}
       type={onClick ? 'button' : undefined}
     >
-      <span className="chip-ring" />
-      <span className="chip-value">{value}</span>
+      <span className="chip-spots" />
+      <span className="chip-inlay">
+        <span className="chip-value">{value}</span>
+      </span>
     </Tag>
   )
 }

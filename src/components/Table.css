@@ -1,75 +1,146 @@
+/* ---- The table: padded leather rail wrapping the green felt ---- */
 .table {
   position: relative;
   flex: 1;
   min-height: 0;
+  width: min(1120px, 97vw);
+  margin: 0 auto;
+  padding: clamp(10px, 1.5vw, 18px);
+  border-radius: 48% 48% 26px 26px / 34% 34% 26px 26px;
+  background: linear-gradient(165deg, var(--rail-hi), var(--rail) 55%, #0d0a07);
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.06),
+    0 2px 0 rgba(0, 0, 0, 0.6),
+    0 34px 80px rgba(0, 0, 0, 0.7);
+}
+
+.felt {
+  position: relative;
+  height: 100%;
+  min-height: clamp(420px, 62vh, 680px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: clamp(1rem, 3vw, 2.4rem) 1rem 1.2rem;
-  border-radius: 50% 50% 22px 22px / 32% 32% 22px 22px;
-  margin: 0 auto;
-  width: min(1100px, 96vw);
-  background:
-    radial-gradient(120% 80% at 50% 12%, #1a3a2c 0%, #123026 38%, #0a1d16 72%, #06120d 100%);
-  border: 2px solid rgba(232, 196, 119, 0.55);
-  box-shadow:
-    inset 0 0 80px rgba(0, 0, 0, 0.55),
-    inset 0 2px 0 rgba(232, 196, 119, 0.18),
-    0 30px 80px rgba(0, 0, 0, 0.6);
+  padding: clamp(1rem, 3vw, 2.2rem) 1rem 1.1rem;
+  border-radius: 46% 46% 18px 18px / 32% 32% 18px 18px;
   overflow: hidden;
+  background:
+    radial-gradient(115% 78% at 50% 16%,
+      var(--felt-lit) 0%, var(--felt) 34%, var(--felt-deep) 70%, var(--felt-edge) 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(201, 164, 90, 0.55),   /* brass trim */
+    inset 0 0 60px rgba(0, 0, 0, 0.45),
+    inset 0 -10px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* Warm overhead spotlight */
-.felt-glow {
+/* Fine baize texture */
+.felt::before {
+  content: '';
   position: absolute;
-  top: -20%;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.felt-spotlight {
+  position: absolute;
+  top: -14%;
   left: 50%;
   transform: translateX(-50%);
-  width: 70%;
-  height: 80%;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 214, 140, 0.14), transparent 70%);
+  width: 75%;
+  height: 70%;
   pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 240, 200, 0.1), transparent 70%);
 }
 
-.felt-arc {
+/* ---- Screen-printed felt graphics ---- */
+.felt-print {
   position: absolute;
-  top: 30%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92%, 760px);
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.fp-main {
+  fill: var(--felt-print);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 46px;
+  letter-spacing: 6px;
+}
+
+.fp-sub {
+  fill: rgba(240, 220, 160, 0.78);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 23px;
+  letter-spacing: 5px;
+}
+
+.fp-sub.small {
+  font-size: 20px;
+  fill: rgba(240, 220, 160, 0.62);
+}
+
+/* ---- Dealer chip float ---- */
+.dealer-float {
+  position: absolute;
+  top: clamp(8px, 1.6vh, 16px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  pointer-events: none;
-  text-align: center;
-  width: 80%;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.15));
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 90, 0.2);
+  z-index: 1;
+  opacity: 0.92;
 }
 
-.felt-legend {
-  font-family: 'Cinzel', serif;
-  font-weight: 700;
-  letter-spacing: 0.32em;
-  font-size: clamp(0.7rem, 1.7vw, 1.05rem);
-  color: rgba(232, 196, 119, 0.42);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+.float-stack {
+  position: relative;
+  width: 26px;
+  height: 30px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--chip-face) 0 4px,
+    rgba(0, 0, 0, 0.4) 4px 6px
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.felt-sub {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(0.52rem, 1.1vw, 0.72rem);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(232, 196, 119, 0.26);
+.float-stack::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--chip-face);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
+/* ---- Hands & message ---- */
 .table-dealer {
   position: relative;
   z-index: 2;
-  min-height: clamp(110px, 17vh, 170px);
+  min-height: clamp(112px, 17vh, 172px);
   display: flex;
   align-items: flex-start;
-  padding-top: 0.4rem;
+  padding-top: clamp(2.6rem, 6vh, 3.6rem); /* clear the dealer float */
 }
 
 .table-message {
@@ -82,8 +153,8 @@
   font-size: 0.84rem;
   letter-spacing: 0.04em;
   color: var(--cream);
-  background: rgba(7, 13, 10, 0.7);
-  border: 1px solid rgba(232, 196, 119, 0.3);
+  background: rgba(6, 22, 14, 0.72);
+  border: 1px solid rgba(201, 164, 90, 0.4);
   padding: 0.34rem 1.1rem;
   border-radius: 999px;
   backdrop-filter: blur(6px);
@@ -104,7 +175,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(1.2rem, 3vh, 2.2rem);
+  gap: clamp(1.1rem, 3vh, 2rem);
   padding-bottom: 0.4rem;
   width: 100%;
 }

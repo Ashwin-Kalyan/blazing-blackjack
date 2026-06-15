@@ -26,6 +26,17 @@
   padding: clamp(0.7rem, 2vw, 1.2rem) clamp(1rem, 4vw, 2.4rem);
   flex-wrap: wrap;
   border-bottom: 1px solid rgba(232, 196, 119, 0.16);
+  animation: enter-down 0.5s ease both;
+}
+
+@keyframes enter-down {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .brand h1 {
@@ -102,7 +113,7 @@
 .shoe-fill {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #6fe0a0, #e8c477 70%, #ff5a36);
+  background: linear-gradient(90deg, #c9a45a, #f0dca0);
   transition: width 0.4s ease;
 }
 
@@ -229,12 +240,29 @@
   color: rgba(244, 236, 216, 0.75);
 }
 
+.debt-readout .stat-label {
+  color: rgba(255, 138, 61, 0.8);
+}
+
+.debt-value {
+  color: var(--ember-glow);
+  text-shadow: 0 0 16px rgba(255, 90, 54, 0.35);
+  font-variant-numeric: tabular-nums;
+  animation: debt-tick 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes debt-tick {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+
 /* ---- Stage / dock ---- */
 .stage {
   flex: 1;
   min-height: 0;
   display: flex;
   padding: clamp(0.6rem, 2vw, 1.4rem) clamp(0.5rem, 2vw, 1.5rem);
+  animation: enter-up 0.6s 0.08s ease both;
 }
 
 .dock {
@@ -243,6 +271,7 @@
   justify-content: center;
   border-top: 1px solid rgba(232, 196, 119, 0.12);
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.35));
+  animation: enter-up 0.6s 0.16s ease both;
 }
 
 @media (max-width: 560px) {

@@ -19,6 +19,21 @@
   justify-content: center;
 }
 
+.action-row.secondary {
+  margin-top: 0.2rem;
+}
+
+.btn.loan {
+  background: linear-gradient(180deg, #ff8a3d, #ff3d2e);
+  border-color: #ffd27a;
+  color: #1a0d06;
+  box-shadow: 0 6px 18px rgba(255, 80, 40, 0.4);
+}
+
+.btn.loan:hover:not(:disabled) {
+  box-shadow: 0 10px 26px rgba(255, 80, 40, 0.55), 0 0 22px rgba(255, 140, 60, 0.45);
+}
+
 .btn {
   font-family: 'Cinzel', serif;
   font-weight: 600;

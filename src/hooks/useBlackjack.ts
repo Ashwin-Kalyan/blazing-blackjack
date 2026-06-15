@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   Card,
   Phase,
@@ -25,6 +25,11 @@ const DEAL_GAP = 360
 const DEALER_GAP = 620
 const REVEAL_GAP = 480
 
+// Loan feature: a typical U.S. personal-loan APR. Casino time runs fast — one
+// real second of play accrues a full day of interest, so the ticker actually moves.
+export const LOAN_APR = 0.125 // 12.5%
+const ACCRUAL_PER_SECOND = LOAN_APR / 365 // 1 real sec === 1 day of interest
+
 const EMPTY_SIDE_BETS: SideBets = { trilock: 0, fortune: 0, blazing: 0 }
 
 export interface GameState {
@@ -43,6 +48,10 @@ export interface GameState {
   roundNet: number
   /** Realized session profit/loss, updated once per round at settlement. */
   sessionNet: number
+  /** Outstanding loan balance (principal + accrued interest). */
+  debt: number
+  /** Cumulative interest charged this session — subtracted from net proceeds. */
+  interestCost: number
   showResult: boolean
   penetration: number
   shuffling: boolean
@@ -65,6 +74,8 @@ function makeInitialState(): GameState {
     message: 'Place your bets',
     roundNet: 0,
     sessionNet: 0,
+    debt: 0,
+    interestCost: 0,
     showResult: false,
     penetration: 0,
     shuffling: false,
@@ -92,6 +103,7 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
   const handIdRef = useRef(0)
   const busyRef = useRef(false)
   const lastBetsRef = useRef<{ main: number; side: SideBets } | null>(null)
+  const lastAccrualRef = useRef<number | null>(null)
 
   if (!shoeRef.current) shoeRef.current = new Shoe(rules.numDecks)
 
@@ -314,6 +326,9 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
       stateRef.current.hands.length === 1 &&
       isNaturalBlackjack(onlyHand.cards, onlyHand.fromSplit)
     ) {
+      // Show the dealer's hand so the resolved round is unambiguous.
+      revealHole()
+      await sleep(REVEAL_GAP)
       const win = onlyHand.bet * rules.blackjackPays
       update((st) => ({
         ...st,
@@ -645,6 +660,8 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
         ...makeInitialState(),
         bankroll: s.bankroll,
         sessionNet: s.sessionNet,
+        debt: s.debt,
+        interestCost: s.interestCost,
         penetration: s.penetration,
         mainBet: 0,
         sideBets: { ...EMPTY_SIDE_BETS },
@@ -663,6 +680,66 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     },
     [update],
   )
+
+  // ---- Loans --------------------------------------------------------------
+
+  const takeLoan = useCallback(
+    (amount: number) => {
+      update((s) => {
+        if (s.phase !== 'betting' && s.phase !== 'roundOver') return s
+        if (amount <= 0) return s
+        return {
+          ...s,
+          bankroll: s.bankroll + amount,
+          debt: s.debt + amount,
+          message: `Borrowed $${amount.toLocaleString()} — interest is ticking`,
+        }
+      })
+    },
+    [update],
+  )
+
+  const repayLoan = useCallback(() => {
+    update((s) => {
+      if (s.phase !== 'betting' && s.phase !== 'roundOver') return s
+      const pay = Math.min(s.bankroll, s.debt)
+      if (pay <= 0) return s
+      const debt = s.debt - pay < 0.01 ? 0 : s.debt - pay
+      return {
+        ...s,
+        bankroll: s.bankroll - pay,
+        debt,
+        message: debt <= 0 ? 'Loan repaid in full' : `Repaid $${Math.round(pay).toLocaleString()}`,
+      }
+    })
+  }, [update])
+
+  // Interest accrues continuously while a balance is outstanding.
+  useEffect(() => {
+    const id = setInterval(() => {
+      update((s) => {
+        if (s.debt <= 0) {
+          lastAccrualRef.current = null
+          return s
+        }
+        const now = Date.now()
+        if (lastAccrualRef.current == null) {
+          lastAccrualRef.current = now
+          return s
+        }
+        const dtSeconds = (now - lastAccrualRef.current) / 1000
+        lastAccrualRef.current = now
+        const interest = s.debt * ACCRUAL_PER_SECOND * dtSeconds
+        if (interest <= 0) return s
+        return {
+          ...s,
+          debt: s.debt + interest,
+          interestCost: s.interestCost + interest,
+        }
+      })
+    }, 400)
+    return () => clearInterval(id)
+  }, [update])
 
   // ---- Re-entrancy lock ---------------------------------------------------
   // One in-flight action holds the lock for its entire promise chain (including
@@ -770,6 +847,9 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     clearBets,
     repeatBet,
     addFunds,
+    // loans
+    takeLoan,
+    repayLoan,
     // derived
     canDouble,
     canSplit,

@@ -8,12 +8,44 @@
   cursor: default;
   flex: 0 0 auto;
   font-family: 'DM Mono', monospace;
+  /* Clay body with a soft top-light bevel */
   background:
-    radial-gradient(circle at 50% 38%, var(--chip-face) 0 52%, var(--chip-edge) 53% 100%);
+    radial-gradient(circle at 50% 30%, var(--chip-hi) 0%, var(--chip-face) 46%, var(--chip-edge) 100%);
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.12),
+    inset 0 2px 3px rgba(255, 255, 255, 0.22),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.4),
     0 6px 14px rgba(0, 0, 0, 0.5);
   transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+/* Edge spots — the contrasting inserts around a real chip's rim */
+.chip-spots {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(245, 240, 230, 0.92) 0deg 13deg,
+    transparent 13deg 45deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
+  mask: radial-gradient(circle, transparent 60%, #000 61%);
+  opacity: 0.9;
+}
+
+.chip-inlay {
+  position: relative;
+  width: 66%;
+  height: 66%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, var(--chip-hi), var(--chip-face) 90%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 4px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 button.chip {
@@ -21,10 +53,11 @@ button.chip {
 }
 
 button.chip:hover:not(:disabled) {
-  transform: translateY(-5px) scale(1.04);
+  transform: translateY(-6px) scale(1.05) rotate(-3deg);
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.18),
-    0 12px 22px rgba(0, 0, 0, 0.55);
+    inset 0 2px 3px rgba(255, 255, 255, 0.25),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.4),
+    0 14px 24px rgba(0, 0, 0, 0.55);
 }
 
 button.chip:disabled {
@@ -33,39 +66,34 @@ button.chip:disabled {
 }
 
 .chip.is-selected {
-  transform: translateY(-8px);
+  transform: translateY(-9px) scale(1.04);
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.22),
+    inset 0 2px 3px rgba(255, 255, 255, 0.25),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.4),
     0 0 0 2px var(--gold),
-    0 14px 26px rgba(0, 0, 0, 0.55),
-    0 0 22px rgba(232, 196, 119, 0.5);
-}
-
-.chip-ring {
-  position: absolute;
-  inset: 14%;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.55);
+    0 16px 28px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(232, 196, 119, 0.55);
 }
 
 .chip-value {
   position: relative;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-.chip-red { --chip-face: #d6403a; --chip-edge: #8e211c; }
-.chip-green { --chip-face: #2f9e6a; --chip-edge: #1a5e3e; }
-.chip-slate { --chip-face: #2b3440; --chip-edge: #141a22; }
-.chip-violet { --chip-face: #7a4bc4; --chip-edge: #432a73; }
+/* color · face / highlight / edge */
+.chip-red { --chip-face: #cf3a34; --chip-hi: #e8615b; --chip-edge: #7e1c18; }
+.chip-green { --chip-face: #2c9866; --chip-hi: #46c089; --chip-edge: #155339; }
+.chip-slate { --chip-face: #2a3340; --chip-hi: #475467; --chip-edge: #11161d; }
+.chip-violet { --chip-face: #774bc0; --chip-hi: #9b71e0; --chip-edge: #3f2870; }
 
-/* ---- Stacks ---- */
+/* ---- Bet-spot stacks ---- */
 .chip-stack {
   position: relative;
   width: 38px;
-  height: 46px;
+  height: 50px;
 }
 
 .chip-disc {
@@ -73,16 +101,18 @@ button.chip:disabled {
   left: 50%;
   transform: translateX(-50%);
   width: 38px;
-  height: 11px;
+  height: 12px;
   border-radius: 50%;
-  background: linear-gradient(180deg, var(--chip-face), var(--chip-edge));
+  background: linear-gradient(180deg, var(--chip-hi), var(--chip-face) 55%, var(--chip-edge));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
     0 1px 2px rgba(0, 0, 0, 0.5);
-  animation: chip-drop 0.3s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+  animation: chip-drop 0.34s cubic-bezier(0.2, 1.5, 0.4, 1) both;
 }
 
 @keyframes chip-drop {
-  from { opacity: 0; transform: translate(-50%, -14px); }
-  to { opacity: 1; transform: translateX(-50%); }
+  0% { opacity: 0; transform: translate(-50%, -26px) rotate(8deg) scale(1.1); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateX(-50%) rotate(0) scale(1); }
 }
