@@ -90,6 +90,17 @@
   padding: 0.6rem 1.1rem;
 }
 
+.btn.allin {
+  background: linear-gradient(180deg, rgba(255, 138, 61, 0.22), rgba(255, 61, 46, 0.16));
+  border-color: var(--ember-glow);
+  color: #ffe6c4;
+}
+
+.btn.allin:hover:not(:disabled) {
+  border-color: #ffd27a;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 138, 61, 0.4);
+}
+
 .btn.is-recommended {
   border-color: #6fe0a0;
   box-shadow: 0 0 0 1px #6fe0a0, 0 0 22px rgba(111, 224, 160, 0.55);

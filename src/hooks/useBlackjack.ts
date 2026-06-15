@@ -635,6 +635,16 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     [update],
   )
 
+  const allIn = useCallback(() => {
+    update((s) => {
+      if (s.phase !== 'betting') return s
+      const committed = s.mainBet + s.sideBets.trilock + s.sideBets.fortune + s.sideBets.blazing
+      const room = s.bankroll - committed
+      if (room <= 0) return s
+      return { ...s, mainBet: s.mainBet + room, showResult: false }
+    })
+  }, [update])
+
   const clearBets = useCallback(() => {
     update((s) =>
       s.phase === 'betting'
@@ -842,6 +852,7 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     // betting
     addToMain,
     addToSide,
+    allIn,
     clearBets,
     repeatBet,
     addFunds,

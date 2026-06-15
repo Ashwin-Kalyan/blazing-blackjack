@@ -46,6 +46,9 @@ export function Controls({
 
   if (phase === 'betting') {
     const hasBet = state.mainBet > 0
+    const committed =
+      state.mainBet + state.sideBets.trilock + state.sideBets.fortune + state.sideBets.blazing
+    const canAllIn = state.bankroll - committed > 0
     return (
       <div className="controls">
         <div className="chip-rack">
@@ -65,6 +68,9 @@ export function Controls({
           </button>
           <button className="btn ghost" onClick={api.repeatBet}>
             Rebet
+          </button>
+          <button className="btn allin" onClick={api.allIn} disabled={!canAllIn}>
+            All In
           </button>
           <button className="btn deal" onClick={api.deal} disabled={!hasBet}>
             Deal
