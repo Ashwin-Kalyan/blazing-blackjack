@@ -25,7 +25,7 @@
   border-radius: 50%;
   background: repeating-conic-gradient(
     from 0deg,
-    rgba(245, 240, 230, 0.92) 0deg 13deg,
+    var(--chip-spot, rgba(245, 240, 230, 0.92)) 0deg 13deg,
     transparent 13deg 45deg
   );
   -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
@@ -83,11 +83,19 @@ button.chip:disabled {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-/* color · face / highlight / edge */
+/* color · face / highlight / edge (--chip-spot overrides the rim insert color) */
+.chip-white { --chip-face: #e8e8ea; --chip-hi: #ffffff; --chip-edge: #bdbdc2; --chip-spot: #34507e; }
 .chip-red { --chip-face: #cf3a34; --chip-hi: #e8615b; --chip-edge: #7e1c18; }
 .chip-green { --chip-face: #2c9866; --chip-hi: #46c089; --chip-edge: #155339; }
+.chip-orange { --chip-face: #e07b2e; --chip-hi: #f4a85e; --chip-edge: #8c4514; }
 .chip-slate { --chip-face: #2a3340; --chip-hi: #475467; --chip-edge: #11161d; }
 .chip-violet { --chip-face: #774bc0; --chip-hi: #9b71e0; --chip-edge: #3f2870; }
+
+/* White chip needs dark text for contrast */
+.chip-white .chip-value {
+  color: #2a3340;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
 
 /* ---- Bet-spot stacks ---- */
 .chip-stack {

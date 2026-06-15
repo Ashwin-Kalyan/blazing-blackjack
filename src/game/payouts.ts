@@ -14,7 +14,7 @@ export const STARTING_BANKROLL = 1000
 export const TABLE_MIN = 5
 export const TABLE_MAX = 500
 
-export const CHIP_DENOMINATIONS = [5, 25, 100, 500] as const
+export const CHIP_DENOMINATIONS = [1, 5, 25, 50, 100, 500] as const
 
 export interface PayoutRow {
   combo: string

@@ -8,7 +8,9 @@
 
 .chip-rack {
   display: flex;
-  gap: clamp(0.5rem, 2vw, 1rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.45rem, 1.6vw, 0.9rem);
   padding: 0.4rem 0.2rem 0.7rem;
 }
 
