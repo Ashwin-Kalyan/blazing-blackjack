@@ -16,7 +16,6 @@ import { basicStrategy, type Advice } from '../game/strategy'
 import {
   DEFAULT_RULES,
   STARTING_BANKROLL,
-  TABLE_MAX,
   TABLE_MIN,
 } from '../game/payouts'
 
@@ -610,7 +609,8 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
       update((s) => {
         if (s.phase !== 'betting') return s
         const committed = s.mainBet + s.sideBets.trilock + s.sideBets.fortune + s.sideBets.blazing
-        const room = Math.min(amount, s.bankroll - committed, TABLE_MAX - s.mainBet)
+        // No table maximum — the only cap is your available bankroll.
+        const room = Math.min(amount, s.bankroll - committed)
         if (room <= 0) return s
         return { ...s, mainBet: s.mainBet + room, showResult: false }
       })
@@ -673,6 +673,14 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
   const dismissResult = useCallback(() => {
     update((s) => ({ ...s, showResult: false }))
   }, [update])
+
+  // Wipe everything — balances, debt, session net — and deal from a fresh shoe.
+  const resetGame = useCallback(() => {
+    busyRef.current = false
+    lastBetsRef.current = null
+    shoeRef.current = new Shoe(rules.numDecks)
+    commit(makeInitialState())
+  }, [commit, rules.numDecks])
 
   const addFunds = useCallback(
     (amount: number) => {
@@ -823,6 +831,7 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     deal: locked.deal,
     nextRound,
     dismissResult,
+    resetGame,
     // player actions
     hit: locked.hit,
     stand: locked.stand,

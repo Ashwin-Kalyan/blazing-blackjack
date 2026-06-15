@@ -17,6 +17,7 @@ export default function App() {
   const [paytableOpen, setPaytableOpen] = useState(false)
   const [cheatOpen, setCheatOpen] = useState(false)
   const [loanOpen, setLoanOpen] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
 
   const openPaytable = () => {
     setCheatOpen(false)
@@ -138,6 +139,32 @@ export default function App() {
           <button className="pill-toggle" onClick={openPaytable} aria-haspopup="dialog">
             Paytables
           </button>
+
+          {confirmReset ? (
+            <span className="reset-confirm">
+              <span className="reset-q">Wipe all?</span>
+              <button
+                className="pill-toggle danger"
+                onClick={() => {
+                  api.resetGame()
+                  setConfirmReset(false)
+                }}
+              >
+                Yes
+              </button>
+              <button className="pill-toggle" onClick={() => setConfirmReset(false)}>
+                No
+              </button>
+            </span>
+          ) : (
+            <button
+              className="pill-toggle"
+              onClick={() => setConfirmReset(true)}
+              title="Wipe balance, debt and net — restart from scratch"
+            >
+              Reset
+            </button>
+          )}
 
           {debt > 0 && (
             <div

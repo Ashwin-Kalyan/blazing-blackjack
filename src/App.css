@@ -147,6 +147,25 @@
   background: rgba(111, 224, 160, 0.1);
 }
 
+.pill-toggle.danger {
+  color: #1a0d06;
+  background: linear-gradient(180deg, #ff8a3d, #ff3d2e);
+  border-color: #ffd27a;
+}
+
+.reset-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.reset-q {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--ember-glow);
+  white-space: nowrap;
+}
+
 .rule-pills {
   display: flex;
   gap: 0.4rem;
