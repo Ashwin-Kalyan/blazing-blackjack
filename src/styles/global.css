@@ -1,0 +1,76 @@
+:root {
+  /* Palette — neon-noir casino */
+  --bg: #06100b;
+  --gold: #e8c477;
+  --gold-deep: #b8902f;
+  --ember: #ff5a36;
+  --ember-glow: #ff8a3d;
+  --cream: #f4ecd8;
+  --card-red: #c8302a;
+  --ink: #181208;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  color: var(--cream);
+  background:
+    radial-gradient(120% 90% at 50% -10%, #16271e 0%, #0a160f 45%, #050c08 100%),
+    var(--bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ambient deco corners on the backdrop */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 0% 100%, rgba(255, 90, 54, 0.06), transparent 60%),
+    radial-gradient(40% 30% at 100% 0%, rgba(232, 196, 119, 0.05), transparent 60%);
+  z-index: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(255, 138, 61, 0.3);
+  color: #fff;
+}
+
+/* Scrollbar in the paytable drawer */
+.paytable::-webkit-scrollbar {
+  width: 8px;
+}
+.paytable::-webkit-scrollbar-thumb {
+  background: rgba(232, 196, 119, 0.3);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

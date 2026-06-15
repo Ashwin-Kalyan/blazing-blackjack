@@ -1,0 +1,121 @@
+.hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  /* Overlap cards slightly like a real fan. */
+  --overlap: clamp(20px, 2.4vw, 30px);
+}
+
+.cards > .card:not(:first-child) {
+  margin-left: calc(var(--overlap) * -1);
+}
+
+.value-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.16rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(8, 16, 12, 0.82);
+  color: var(--cream);
+  border: 1px solid rgba(232, 196, 119, 0.4);
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.value-badge.bust {
+  color: #ff8d7a;
+  border-color: rgba(255, 90, 54, 0.6);
+  background: rgba(40, 10, 6, 0.85);
+}
+
+.value-badge.bj {
+  color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(232, 196, 119, 0.5);
+}
+
+.hand-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hand-bet {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--gold);
+  background: rgba(8, 16, 12, 0.6);
+  padding: 0.14rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 196, 119, 0.25);
+}
+
+.hand-bet em {
+  color: var(--ember);
+  font-style: normal;
+}
+
+.hand-bet .free-chip {
+  color: var(--ember-glow);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Active hand spotlight */
+.player-hand.is-active::before {
+  content: '';
+  position: absolute;
+  inset: -16px -22px 8px;
+  border-radius: 20px;
+  background: radial-gradient(60% 80% at 50% 30%, rgba(232, 196, 119, 0.16), transparent 70%);
+  z-index: -1;
+  animation: pulse-active 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-active {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.outcome-tag {
+  position: absolute;
+  top: -14px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(8, 16, 12, 0.92);
+  border: 1px solid currentColor;
+  animation: tag-pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+@keyframes tag-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.outcome-tag.outcome-win,
+.outcome-tag.outcome-blackjack { color: #6fe0a0; }
+.outcome-tag.outcome-push { color: var(--gold); }
+.outcome-tag.outcome-lose,
+.outcome-tag.outcome-bust { color: #ff8d7a; }
+
+.player-hand.outcome-win .cards,
+.player-hand.outcome-blackjack .cards {
+  filter: drop-shadow(0 0 18px rgba(111, 224, 160, 0.45));
+}
+.player-hand.outcome-lose .cards,
+.player-hand.outcome-bust .cards {
+  opacity: 0.7;
+}

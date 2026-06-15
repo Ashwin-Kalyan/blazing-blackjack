@@ -1,0 +1,144 @@
+.card {
+  --w: clamp(58px, 7.2vw, 92px);
+  width: var(--w);
+  height: calc(var(--w) * 1.42);
+  perspective: 1000px;
+  flex: 0 0 auto;
+  animation: card-deal 0.42s cubic-bezier(0.18, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes card-deal {
+  from {
+    opacity: 0;
+    transform: translate(60px, -120px) rotate(14deg) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(1);
+  }
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.6, 0.05, 0.2, 1);
+  transform: rotateY(0deg);
+}
+
+.card.is-down .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--w) * 0.1);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.35),
+    0 10px 22px rgba(0, 0, 0, 0.45);
+}
+
+/* ---- Front ---- */
+.card-front {
+  background:
+    radial-gradient(120% 90% at 30% 0%, #fffdf6 0%, #f4ecd8 70%, #e9ddbf 100%);
+  border: 1px solid rgba(120, 96, 40, 0.35);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  font-family: 'DM Mono', ui-monospace, monospace;
+}
+
+.card.is-red .card-front {
+  color: var(--card-red);
+}
+
+.corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.92;
+  font-weight: 500;
+}
+
+.corner.top {
+  top: calc(var(--w) * 0.07);
+  left: calc(var(--w) * 0.09);
+}
+
+.corner.bottom {
+  bottom: calc(var(--w) * 0.07);
+  right: calc(var(--w) * 0.09);
+  transform: rotate(180deg);
+}
+
+.corner-rank {
+  font-size: calc(var(--w) * 0.26);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.corner-suit {
+  font-size: calc(var(--w) * 0.2);
+}
+
+.pip {
+  font-size: calc(var(--w) * 0.62);
+  line-height: 1;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.08));
+}
+
+.pip-face {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: calc(var(--w) * 0.52);
+  background: linear-gradient(160deg, #c79a3c, #8a651d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card.is-red .pip-face {
+  background: linear-gradient(160deg, #d8493f, #9c241d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Back ---- */
+.card-back {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(45deg, #11241c 0 6px, #0c1c16 6px 12px);
+  border: 1px solid rgba(232, 196, 119, 0.5);
+  display: grid;
+  place-items: center;
+}
+
+.card-back-art {
+  position: absolute;
+  inset: calc(var(--w) * 0.08);
+  border: 1px solid rgba(232, 196, 119, 0.55);
+  border-radius: calc(var(--w) * 0.06);
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 60% at 50% 50%, rgba(232, 196, 119, 0.14), transparent 70%);
+}
+
+.card-back-mark {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: calc(var(--w) * 0.5);
+  background: linear-gradient(180deg, #ffd27a, #ff7a35 60%, #ff3d2e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transform: rotate(-8deg);
+}
