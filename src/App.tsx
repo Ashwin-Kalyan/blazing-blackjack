@@ -142,14 +142,14 @@ export default function App() {
           {debt > 0 && (
             <div
               className="stat-readout debt-readout"
-              title={`Loan balance at ${aprPct}% APR — accruing live`}
+              title={`Loan balance — compounds yearly at ${aprPct}% APR (one year every 5 min)`}
               aria-label={`Loan debt $${Math.round(debt).toLocaleString()} at ${aprPct}% APR`}
             >
               <span className="stat-label" aria-hidden>
                 DEBT · {aprPct}%
               </span>
               <span className="stat-value debt-value" aria-hidden>
-                ${debt.toFixed(2)}
+                ${Math.round(debt).toLocaleString()}
               </span>
             </div>
           )}

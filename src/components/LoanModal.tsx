@@ -40,7 +40,7 @@ export function LoanModal({ open, onClose, onBorrow }: LoanModalProps) {
 
         <div className="loan-rate">
           <span className="loan-rate-num">{aprPct}%</span>
-          <span className="loan-rate-cap">APR · interest ticks live</span>
+          <span className="loan-rate-cap">APR · compounds yearly</span>
         </div>
 
         <div className="loan-presets">
@@ -78,8 +78,8 @@ export function LoanModal({ open, onClose, onBorrow }: LoanModalProps) {
         </div>
 
         <p className="loan-fine">
-          Interest accrues at {aprPct}% APR until repaid and is deducted from your net.
-          Vinny always gets paid.
+          Interest compounds yearly at {aprPct}% APR (one year every 5 minutes of play)
+          and is deducted from your net. Vinny always gets paid.
         </p>
       </div>
     </div>

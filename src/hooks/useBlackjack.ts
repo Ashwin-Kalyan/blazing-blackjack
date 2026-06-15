@@ -25,10 +25,11 @@ const DEAL_GAP = 360
 const DEALER_GAP = 620
 const REVEAL_GAP = 480
 
-// Loan feature: a typical U.S. personal-loan APR. Casino time runs fast — one
-// real second of play accrues a full day of interest, so the ticker actually moves.
+// Loan feature: a typical U.S. personal-loan APR. Interest compounds once a
+// year; in casino time a year passes every 5 minutes, so the balance steps up
+// quietly rather than ticking live.
 export const LOAN_APR = 0.125 // 12.5%
-const ACCRUAL_PER_SECOND = LOAN_APR / 365 // 1 real sec === 1 day of interest
+const COMPOUND_INTERVAL_MS = 5 * 60 * 1000 // one yearly compounding every 5 minutes
 
 const EMPTY_SIDE_BETS: SideBets = { trilock: 0, fortune: 0, blazing: 0 }
 
@@ -103,7 +104,6 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
   const handIdRef = useRef(0)
   const busyRef = useRef(false)
   const lastBetsRef = useRef<{ main: number; side: SideBets } | null>(null)
-  const lastAccrualRef = useRef<number | null>(null)
 
   if (!shoeRef.current) shoeRef.current = new Shoe(rules.numDecks)
 
@@ -714,30 +714,19 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     })
   }, [update])
 
-  // Interest accrues continuously while a balance is outstanding.
+  // Compound one year of interest every 5 real minutes while a balance is owed.
   useEffect(() => {
     const id = setInterval(() => {
       update((s) => {
-        if (s.debt <= 0) {
-          lastAccrualRef.current = null
-          return s
-        }
-        const now = Date.now()
-        if (lastAccrualRef.current == null) {
-          lastAccrualRef.current = now
-          return s
-        }
-        const dtSeconds = (now - lastAccrualRef.current) / 1000
-        lastAccrualRef.current = now
-        const interest = s.debt * ACCRUAL_PER_SECOND * dtSeconds
-        if (interest <= 0) return s
+        if (s.debt <= 0) return s
+        const interest = s.debt * LOAN_APR
         return {
           ...s,
           debt: s.debt + interest,
           interestCost: s.interestCost + interest,
         }
       })
-    }, 400)
+    }, COMPOUND_INTERVAL_MS)
     return () => clearInterval(id)
   }, [update])
 
