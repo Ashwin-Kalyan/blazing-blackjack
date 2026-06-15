@@ -9,6 +9,61 @@ import { CheatSheet } from './components/CheatSheet'
 import { LoanModal } from './components/LoanModal'
 import './App.css'
 
+/** Header logo mark — a flaming 7 in Classic, a 2× badge in Free Double. */
+function BrandMark({ freeBet }: { freeBet: boolean }) {
+  if (freeBet) {
+    return (
+      <svg className="brand-mark" viewBox="0 0 44 44" aria-hidden>
+        <defs>
+          <linearGradient id="bmDbl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#ffe39c" />
+            <stop offset="0.5" stopColor="#ff8a3d" />
+            <stop offset="1" stopColor="#ff2f23" />
+          </linearGradient>
+        </defs>
+        <circle cx="22" cy="22" r="18" fill="none" stroke="url(#bmDbl)" strokeWidth="3" />
+        <text
+          x="22"
+          y="30"
+          textAnchor="middle"
+          fontFamily="'Cinzel', serif"
+          fontWeight="900"
+          fontSize="20"
+          fill="url(#bmDbl)"
+        >
+          2×
+        </text>
+      </svg>
+    )
+  }
+  return (
+    <svg className="brand-mark" viewBox="0 0 44 44" aria-hidden>
+      <defs>
+        <linearGradient id="bmFire" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffe39c" />
+          <stop offset="0.45" stopColor="#ff8a3d" />
+          <stop offset="1" stopColor="#ff2f23" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M22 2 C28 9 33 13 28 21 C34 19 36 27 30 35 C36 33 31 42 22 42 C13 42 8 33 14 35 C8 27 10 19 16 21 C11 13 16 9 22 2 Z"
+        fill="url(#bmFire)"
+      />
+      <text
+        x="22"
+        y="31"
+        textAnchor="middle"
+        fontFamily="'Cinzel', serif"
+        fontWeight="900"
+        fontSize="20"
+        fill="#3a1402"
+      >
+        7
+      </text>
+    </svg>
+  )
+}
+
 export default function App() {
   const [rules, setRules] = useState<Rules>(DEFAULT_RULES)
   const api = useBlackjack(rules)
@@ -62,17 +117,30 @@ export default function App() {
   const debt = state.debt
   const aprPct = (LOAN_APR * 100).toFixed(1)
 
+  const bankrollStr =
+    availableChips < 0
+      ? `−$${Math.abs(availableChips).toLocaleString()}`
+      : `$${availableChips.toLocaleString()}`
+
   return (
     <div className="app">
       <div className="grain" aria-hidden />
 
       <header className="topbar">
         <div className="brand">
-          <h1>
-            <span className="brand-blaze">Blazing</span>
-            <span className="brand-bj">Blackjack</span>
-          </h1>
-          <span className="brand-tag">Trilock · Fortune · Blazing 7s</span>
+          <BrandMark freeBet={rules.freeBetMode} />
+          <div className="brand-text">
+            <h1>
+              {rules.freeBetMode && <span className="brand-prefix">Free Double</span>}
+              <span className="brand-blaze">Blazing</span>
+              <span className="brand-bj">Blackjack</span>
+            </h1>
+            <span className="brand-tag">
+              {rules.freeBetMode
+                ? 'Free doubles & splits · Dealer 22 pushes'
+                : 'TriLux · Fortune · Blazing 7s'}
+            </span>
+          </div>
         </div>
 
         <div className="topbar-controls">
@@ -186,13 +254,13 @@ export default function App() {
             <span className={`stat-value net-${netTone}`} aria-hidden>{netStr}</span>
           </div>
 
-          <div
-            className="stat-readout"
-            aria-label={`Bankroll $${availableChips.toLocaleString()}`}
-          >
+          <div className="stat-readout" aria-label={`Bankroll ${bankrollStr}`}>
             <span className="stat-label" aria-hidden>BANKROLL</span>
-            <span className="stat-value bankroll-value" aria-hidden>
-              ${availableChips.toLocaleString()}
+            <span
+              className={`stat-value bankroll-value ${availableChips < 0 ? 'net-down' : ''}`}
+              aria-hidden
+            >
+              {bankrollStr}
             </span>
           </div>
         </div>

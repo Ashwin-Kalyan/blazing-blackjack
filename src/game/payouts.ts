@@ -34,7 +34,7 @@ export const FORTUNE_PAYTABLE: PayoutRow[] = [
   { combo: 'Any 19', odds: 2 },
 ]
 
-/** TriLock (TriLux / 21+3 style) — player's two cards + dealer upcard. */
+/** TriLux (21+3 style) — player's two cards + dealer upcard. */
 export const TRILOCK_PAYTABLE: PayoutRow[] = [
   { combo: 'Suited Trips', odds: 100 },
   { combo: 'Straight Flush', odds: 40 },

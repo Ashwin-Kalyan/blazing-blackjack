@@ -9,7 +9,7 @@ interface BetSpotsProps {
 }
 
 const SIDE_SPOTS: { key: SideBetKey; label: string; top: string }[] = [
-  { key: 'trilock', label: 'TriLock', top: '100:1' },
+  { key: 'trilock', label: 'TriLux', top: '100:1' },
   { key: 'fortune', label: 'Fortune', top: '200:1' },
   { key: 'blazing', label: 'Blazing 7s', top: '1000:1' },
 ]
@@ -17,66 +17,93 @@ const SIDE_SPOTS: { key: SideBetKey; label: string; top: string }[] = [
 /** Original stylized emblems for each proprietary side bet. */
 function SideBetLogo({ which }: { which: SideBetKey }) {
   if (which === 'trilock') {
+    // TriLux mark — a beveled blue triangular frame.
     return (
       <svg className="sb-logo" viewBox="0 0 48 48" aria-hidden>
         <defs>
-          <linearGradient id="triGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#7fe3d0" />
-            <stop offset="1" stopColor="#e8c477" />
+          <linearGradient id="triLuxGrad" x1="0" y1="0" x2="0.3" y2="1">
+            <stop offset="0" stopColor="#9fd0f0" />
+            <stop offset="0.5" stopColor="#3f86c4" />
+            <stop offset="1" stopColor="#1b5187" />
           </linearGradient>
         </defs>
-        <g fill="none" stroke="url(#triGrad)" strokeWidth="3">
-          <circle cx="24" cy="16" r="9" />
-          <circle cx="15.5" cy="31" r="9" />
-          <circle cx="32.5" cy="31" r="9" />
-        </g>
+        <path
+          d="M24 3 L45 43 L3 43 Z M24 16 L34 37 L14 37 Z"
+          fill="url(#triLuxGrad)"
+          fillRule="evenodd"
+          stroke="#143f68"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        {/* top-edge highlight */}
+        <path d="M24 6 L41.5 39.5" fill="none" stroke="#cfe8fb" strokeWidth="1" opacity="0.55" />
       </svg>
     )
   }
   if (which === 'fortune') {
+    // Fortune mark — a gold Chinese prosperity coin with a square hole.
     return (
       <svg className="sb-logo" viewBox="0 0 48 48" aria-hidden>
         <defs>
-          <linearGradient id="forGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#ffe39c" />
-            <stop offset="1" stopColor="#e0b84a" />
-          </linearGradient>
+          <radialGradient id="forCoin" cx="0.42" cy="0.34" r="0.75">
+            <stop offset="0" stopColor="#ffe9b0" />
+            <stop offset="0.55" stopColor="#e8be57" />
+            <stop offset="1" stopColor="#bd8a2c" />
+          </radialGradient>
+          <mask id="forHole">
+            <rect width="48" height="48" fill="#fff" />
+            <rect x="17.5" y="17.5" width="13" height="13" rx="2.5" fill="#000" />
+          </mask>
         </defs>
-        <path d="M27 33 L31 45" stroke="#2c9866" strokeWidth="2.4" fill="none" strokeLinecap="round" />
-        <g fill="url(#forGrad)">
-          <circle cx="24" cy="15" r="7.4" />
-          <circle cx="15" cy="24" r="7.4" />
-          <circle cx="33" cy="24" r="7.4" />
-          <circle cx="24" cy="32" r="7.4" />
+        {/* red accent ring */}
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#c4382b" strokeWidth="2.2" />
+        {/* coin body with punched square hole */}
+        <g mask="url(#forHole)">
+          <circle cx="24" cy="24" r="18.5" fill="url(#forCoin)" />
         </g>
-        <circle cx="24" cy="23.5" r="3" fill="#caa23e" />
+        <circle cx="24" cy="24" r="18.5" fill="none" stroke="#9a6b1a" strokeWidth="2" />
+        <rect
+          x="17.5"
+          y="17.5"
+          width="13"
+          height="13"
+          rx="2.5"
+          fill="none"
+          stroke="#9a6b1a"
+          strokeWidth="1.6"
+        />
       </svg>
     )
   }
-  // blazing 7s
+  // Blazing 7s mark — three flaming sevens.
   return (
     <svg className="sb-logo" viewBox="0 0 48 48" aria-hidden>
       <defs>
-        <linearGradient id="fireGrad" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="blaze7" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#ffe39c" />
           <stop offset="0.45" stopColor="#ff8a3d" />
           <stop offset="1" stopColor="#ff2f23" />
         </linearGradient>
       </defs>
-      <path
-        d="M24 3 C30 11 35 15 30 24 C37 21 39 31 32 39 C39 37 34 47 24 47 C14 47 9 37 16 39 C9 31 11 21 18 24 C13 15 18 11 24 3 Z"
-        fill="url(#fireGrad)"
-      />
+      {/* flame tips rising off each seven */}
+      <g fill="url(#blaze7)">
+        <path d="M14 18 C11 13 12 8 14 5 C16 8 17 14 14 18 Z" />
+        <path d="M24 17 C20 11 22 5 24 2 C26 5 28 11 24 17 Z" />
+        <path d="M34 18 C31 13 32 8 34 5 C36 8 37 14 34 18 Z" />
+      </g>
       <text
         x="24"
-        y="34"
+        y="40"
         textAnchor="middle"
         fontFamily="'Cinzel', serif"
         fontWeight="900"
-        fontSize="22"
-        fill="#3a1402"
+        fontSize="19"
+        letterSpacing="-1"
+        fill="url(#blaze7)"
+        stroke="#7a1410"
+        strokeWidth="0.6"
       >
-        7
+        777
       </text>
     </svg>
   )

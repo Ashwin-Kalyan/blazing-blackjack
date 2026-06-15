@@ -77,6 +77,12 @@
   letter-spacing: 6px;
 }
 
+/* Longer Free Double title — shrink so it fits the arc */
+.fp-main.long {
+  font-size: 33px;
+  letter-spacing: 2px;
+}
+
 .fp-sub {
   fill: rgba(240, 220, 160, 0.78);
   font-family: 'Outfit', sans-serif;

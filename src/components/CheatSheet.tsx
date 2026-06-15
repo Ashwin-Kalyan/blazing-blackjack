@@ -256,7 +256,7 @@ export function CheatSheet({ open, onClose, api, rules }: CheatSheetProps) {
 
         <section className="cs-block">
           <h3>Side Bets <span className="cs-sub">(first two cards + dealer upcard)</span></h3>
-          <p className="cs-rule-name">TriLock</p>
+          <p className="cs-rule-name">TriLux</p>
           <ul className="cs-rules tight">
             <li>Poker on three cards: flush, straight, three of a kind, straight flush, suited trips. Top pays 100:1.</li>
           </ul>

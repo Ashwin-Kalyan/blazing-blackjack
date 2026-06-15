@@ -511,7 +511,6 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
 
     const wager = hand.bet > 0 ? hand.bet : hand.freeAmount
     const free = rules.freeBetMode && isFreeDoubleEligible(hand.cards)
-    if (!free && wager > s.bankroll) return
 
     update((st) => ({
       ...st,
@@ -544,8 +543,7 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     if (
       hand.cards.length !== 2 ||
       hand.cards[0].rank !== hand.cards[1].rank ||
-      s.hands.length >= rules.maxSplitHands ||
-      (!freeSplit && wager > s.bankroll)
+      s.hands.length >= rules.maxSplitHands
     ) {
       return
     }
@@ -795,10 +793,9 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     if (state.phase !== 'playerTurn' || !activeHand) return false
     if (activeHand.cards.length !== 2 || activeHand.splitAces) return false
     if (activeHand.fromSplit && !rules.doubleAfterSplit) return false
-    if (doubleIsFree) return true
-    const wager = activeHand.bet > 0 ? activeHand.bet : activeHand.freeAmount
-    return wager <= state.bankroll
-  }, [activeHand, doubleIsFree, rules.doubleAfterSplit, state.bankroll, state.phase])
+    // No-limit sandbox: doubling is always allowed (bankroll may go negative).
+    return true
+  }, [activeHand, rules.doubleAfterSplit, state.phase])
 
   const splitIsFree = useMemo(() => {
     if (state.phase !== 'playerTurn' || !activeHand) return false
@@ -820,10 +817,9 @@ export function useBlackjack(rules: Rules = DEFAULT_RULES) {
     ) {
       return false
     }
-    if (splitIsFree) return true
-    const wager = activeHand.bet > 0 ? activeHand.bet : activeHand.freeAmount
-    return wager <= state.bankroll
-  }, [activeHand, rules.maxSplitHands, splitIsFree, state.bankroll, state.hands.length, state.phase])
+    // No-limit sandbox: splitting a pair is always allowed (bankroll may go negative).
+    return true
+  }, [activeHand, rules.maxSplitHands, state.hands.length, state.phase])
 
   const advice = useMemo<Advice | null>(() => {
     if (state.phase !== 'playerTurn' || !activeHand || !dealerUp) return null

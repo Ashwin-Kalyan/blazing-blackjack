@@ -123,7 +123,7 @@ export function evaluateBlazing(cards: ThreeCards): [string | null, number] {
 // ---------------------------------------------------------------------------
 
 const LABELS: Record<keyof SideBets, string> = {
-  trilock: 'TriLock',
+  trilock: 'TriLux',
   fortune: 'Fortune',
   blazing: 'Blazing 7s',
 }

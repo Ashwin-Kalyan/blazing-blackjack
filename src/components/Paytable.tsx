@@ -74,8 +74,8 @@ export function Paytable({ open, onClose, rules }: PaytableProps) {
           edge="~7.9%"
         />
         <Table
-          title="TriLock"
-          blurb="Poker-style scoring (à la TriLux / 21+3) on your two cards and the dealer upcard."
+          title="TriLux"
+          blurb="Poker-style scoring (the 21+3 family) on your two cards and the dealer upcard."
           rows={TRILOCK_PAYTABLE}
           edge="several %"
         />

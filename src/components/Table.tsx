@@ -22,14 +22,14 @@ function FeltPrint({ hitSoft17, freeBet }: { hitSoft17: boolean; freeBet: boolea
       <defs>
         <path id="bjArc" d="M 150 330 A 400 330 0 0 1 850 330" fill="none" />
       </defs>
-      <text className="fp-main">
+      <text className={`fp-main ${freeBet ? 'long' : ''}`}>
         <textPath href="#bjArc" startOffset="50%" textAnchor="middle">
-          BLACKJACK PAYS 3 TO 2
+          {freeBet ? 'FREE DOUBLE BLAZING BLACKJACK' : 'BLACKJACK PAYS 3 TO 2'}
         </textPath>
       </text>
       <text className="fp-sub" x="500" y="378" textAnchor="middle">
         {freeBet
-          ? 'FREE BET  ·  DEALER 22 PUSHES'
+          ? 'DEALER 22 PUSHES  ·  BJ PAYS 3:2'
           : `DEALER MUST ${hitSoft17 ? 'HIT SOFT 17' : 'STAND ON ALL 17'}`}
       </text>
       <text className="fp-sub small" x="500" y="408" textAnchor="middle">
